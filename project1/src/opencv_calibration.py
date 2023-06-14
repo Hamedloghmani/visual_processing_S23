@@ -2,6 +2,8 @@ import numpy as np
 import cv2 as cv
 import glob
 
+# Just for reference, this calibration is inspired by a tutorial in OpenCV documentations and the link is provided as well:
+# https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -19,7 +21,7 @@ for fname in images:
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Find the chess board corners
     ret, corners = cv.findChessboardCorners(gray, (7,6), None)
-    # If found, add object points, image points (after refining them)
+    # add object points, image points (after refining them)
     if ret == True:
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
@@ -33,7 +35,7 @@ mean_error = 0
 
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-
+# Printing out the camera matrix
 print(f'M matrix: \n {mtx}')
 
 for i in range(len(objpoints)):
@@ -45,4 +47,5 @@ for i in range(len(objpoints)):
     mean_error += error
 
 mean_error /= len(objpoints)
+# Printing mean error
 print("Mean reprojection error: {}".format(mean_error))
